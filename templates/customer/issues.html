@@ -1,0 +1,30 @@
+
+<body>
+    <title>Issues of {{currentUser}}</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<h1>Issues raised by {{currentUser}}</h1>
+<table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">User Id</th>
+        <th scope="col">Contact Id</th>
+        <th scope="col">UserName</th>
+        <th scope="col">Email</th>
+        <th scope="col">Issue</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+     {% for issue in contact_issues %}
+     <tr>
+        <td>{{issue.cid.cid}}</td>
+        <td>{{issue.contact_id}}</td>
+        <td>{{issue.contact_name}}</td>
+        <td>{{issue.contact_email}}</td>
+        <td>{{issue.contact_message}}</td>
+        <td>Pending</td>
+      </tr>
+     {% endfor %}
+    </tbody>
+  </table>
+</body>

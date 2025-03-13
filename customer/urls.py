@@ -1,0 +1,30 @@
+from django.urls import path
+from .views import login, index, contact, signup, CreateUser, ViewUser, delete_user,LoginCheck,admin,billing, delivery,terms,logout,ContactBox, products, seller,issues,exampleview, userdashboard,UpdateUser, delete_account,GetRegion
+from . import views
+urlpatterns = [
+    path('index/<int:cid>', index, name='index'),
+    path('logout/',logout,name="logout"),
+    path('', login, name='login'),
+    path('product/',products, name='products'),
+    path('signup/', signup, name='signup'),
+    path('contact/',contact, name='contact'),
+    path("create_user/",CreateUser.as_view(),name='create_user'),
+    path("contact_box/",ContactBox.as_view(),name='contact_box'),
+    path("view_user/",ViewUser.as_view(),name='view_user'),
+    path("delete_user/",delete_user.as_view(),name='delete_user'),
+    path("login_check/",LoginCheck.as_view(),name='login_check'),
+    path('admind/',admin, name='admin'),
+    path('billing/',billing, name='billing'),
+    path('delivery/',delivery, name='delivery'),
+    path('terms/',terms, name='terms'),
+    path("seller/",seller, name="seller"),
+    path("issues/",issues, name="issues"),
+    path("exampleview/",exampleview, name="exampleview"),
+    path("userdashboard/<str:name>/<int:cid>",userdashboard, name="user_dashboard"),
+    path("update_user/",UpdateUser.as_view(), name="update_user"),
+    path("delete_account/",delete_account.as_view(), name="delete_account"),
+    path("get-region/",GetRegion.as_view(), name="get-region"),
+    path("admin_dashboard/",views.admin_dashboard, name="admin_dashboard"),
+    path("create_vendor_admin/",views.form_element_input, name="form-element-input"),
+    path("billing/",views.billing, name="billing"),
+]

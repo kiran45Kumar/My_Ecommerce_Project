@@ -1,0 +1,87 @@
+{% extends 'customer/admin.html' %}
+{% block sidebar %}
+<style>
+    .flex-container {
+        display: flex;
+        flex: 5;
+        margin-top: 20%;
+    }
+
+    .medicine-table {
+        width: 100%; /* Ensures the table takes the full width of the flex container */
+        border-collapse: collapse;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .medicine-table thead tr {
+        background-color: #000;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    .medicine-table th {
+        padding: 10px;
+        border: 3px solid #525151; /* Black border */
+    }
+
+    .medicine-table td {
+        padding: 10px;
+        border: 3px solid #746f6f; /* Black border */
+        background-color: #000; /* Black background for td */
+        color: #ffffff; /* White text for td */
+    }
+
+    .medicine-table tbody tr:nth-child(even) td {
+        background-color: #111; /* Slightly lighter black for even rows */
+    }
+
+    .medicine-table tbody tr:hover {
+        background-color: #222; /* Darker grey on hover */
+    }
+
+    .medicine-table tbody tr:hover td {
+        background-color: #222; /* Darker grey for hovered rows */
+    }
+    .billing-text{
+        color: white;
+    }
+</style>
+
+<h1>Billing</h1>
+<div class="billing-text">
+    <h2>Products</h2>
+    <p></p>
+</div>
+<div class="flex-container">
+    <table class="medicine-table">
+        <thead>
+            <tr>
+                <th>Medicine ID</th>
+                <th>Supplier Name</th>
+                <th>Generic Name</th>
+                <th>Brand</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in medicines %}
+            <tr>
+                <td>{{ product.med_id }}</td>
+                <td>{{ product.supplier_id.supplier_name }}</td>
+                <td>{{ product.generic_name }}</td>
+                <td>{{ product.brand_name}}</td>
+                <td>{{ product.category }}</td>
+                <td>&#8377;{{ product.price }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

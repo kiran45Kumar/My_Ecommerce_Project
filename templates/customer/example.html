@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inbox </title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+</head>
+<style>
+    .main-contact-modal{
+        height: 200px;
+        width: 400px;
+        background: #000;
+        color: white;
+        position: fixed;
+        overflow-y: scroll;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: column;
+        gap: 20px;
+    }
+    .contact_card{
+        border-bottom: 1px solid gray;
+        margin: 10px;
+    }
+    ::-webkit-scrollbar{
+        display: none;
+    }
+    .modal-open{ 
+
+        opacity: 0;
+        transition: all 0.3s ease-in-out;
+    }
+    @keyframes fadein {
+        from{
+            opacity: 0;
+            transition: all 0.3 ease;
+        }
+        to{
+            opacity: 1;
+            transition: all 0.3s ease;
+        }
+    }
+    .notification-icon i{
+        cursor: pointer;
+        font-size: 25px;
+    }
+    .contact_card h1{
+        font-size: 1.2rem;
+    }
+</style>
+<body>
+<div class="notification-icon">
+    <i class='bx bx-bell' onclick="openModal()"></i>
+</div>
+
+<div class="main-contact-modal modal-open" id="modal" >
+    {% for contact in contacts %}
+    <div id="{{contact.contact_id}}" class="contact_card">
+        <p>Contact Id: CON{{contact.cid.cid}}</p>
+        <h1>Customer Name: {{contact.contact_name}}</h1>
+        <h4>Customer Email: {{contact.contact_email}}</h4>
+        <h3>Customer Issue: {{contact.contact_message}}</h3>
+    </div>
+{% endfor %}
+</div>
+
+<script>
+    function openModal(){
+        $("#modal").toggleClass('modal-open')
+        $("#modal").css('transition','all 0.3 ease-in-out;')
+    }
+</script>
+</body>
+</html>

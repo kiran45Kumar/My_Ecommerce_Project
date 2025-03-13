@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudeeksha Pharmacy - Log Out</title>
+    <link
+    href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    rel="stylesheet"
+  />
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        .container-logout {
+            text-align: center;
+            padding: 30px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 5px 5px 5px rgba(0, 0, 0, 0.1);
+            width: 500px;
+        }
+        h1 {
+            color: #4CAF50;
+        }
+        .success{
+            font-size: 1.4rem;
+        }
+        p {
+            margin: 20px 0;
+        }
+        a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            padding: 10px 20px;
+            background: #000;
+            background: #4CAF50;
+            border-radius: 5px;
+        }
+    
+        .logout-container{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 5%;
+        }
+        .check-icon{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* border-radius: 50%; */
+            font-size: 100px;
+            color: #28a475;
+        }
+        .navbar-logout{
+            display: flex;
+            justify-content: space-around;
+            gap: 200px;
+            align-items: center;
+            border-bottom: 2px solid silver;
+            background: #000;
+            color: white;
+            padding: 20px;
+        }
+        .navbar-logout .logout-logo h1{
+            font-size: 1.7rem;
+        }
+        .logout-logo{
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .navbar-logout .logout-logo button{
+            padding: 10px 20px;
+            background: #28a475;
+            border: 1px solid #28a475;
+            outline: none;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 5px;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar-logout">
+        <div class="logout-logo">
+            <h1>Sudeeksha Pharmacy</h1>
+        </div>
+        <div class="logout-logo">
+            
+        <!-- <a href="{% url 'login' %}">Log In</a> -->
+        <a href="{% url 'signup' %}">Sign Up</a>
+        </div>
+    </div>
+   <div class="logout-container">
+    <div class="container-logout">
+        <div class="check-icon">
+            <i class='bx bxs-check-circle'></i>
+        </div>
+        <h1>You Have Been Logged Out</h1>
+        <p class="success">Thank you for using our service.</p>
+        <p>You can log in again anytime.</p>
+        <a href="{% url 'login' %}">Log In Again</a>
+    </div>
+   </div>
+
+
+   <footer >
+ 
+  </footer>
+</body>
+</html>

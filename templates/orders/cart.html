@@ -1,0 +1,146 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block body %}
+    <!-- sell section -->
+    <section>
+      <div class="login-section create-section">
+        <div class="sell-text text-left">
+          <p>Place Your <span>Order</span></p>
+          <h5>
+            A seller account is required to provide a structured way for
+            individuals or businesses to manage and track their sales,
+            inventory, and customer interactions on a platform.
+          </h5>
+          <!-- <div class="create-button">
+            <button>Contact Us</button>
+          </div> -->
+        </div>
+        <div class="login-right login-main">
+          <h1 id="Login" class="login">Enter Your Details</h1>
+          <div class="forms form-flex">
+            <fieldset class="form-fieldset">
+              <legend>User Information</legend>
+              <label for="user">Your Name</label>
+              <div class="form-input form-control">
+                <i class="bx bx-user-circle"></i>
+                <input type="text" placeholder="User" id="user" />
+              </div>
+
+              <label for="userphone">Your Phone</label>
+              <div class="form-input form-control">
+                <i class="bx bx-phone-call"></i>
+                <input type="text" placeholder="Phone" id="userphone" />
+              </div>
+
+              <label for="usergmail">Email </label>
+              <div class="form-input form-control">
+                <i class="bx bx-envelope"></i>
+                <input type="text" placeholder="Email Address" id="usergmail" />
+              </div>
+
+              <label for="useraddress">Address</label>
+              <div class="form-input form-control">
+                <i class="fa-regular fa-address-book"></i>
+                <input type="text" placeholder="Address" id="useraddress" />
+              </div>
+
+              <label for="useralternate">Alternate Ph NO</label>
+              <div class="form-input form-control">
+                <i class="bx bx-phone-call"></i>
+                <input
+                  type="text"
+                  placeholder="Alternate Phone NO"
+                  id="useralternate"
+                />
+              </div>
+            </fieldset>
+         
+
+            <fieldset class="form-fieldset">
+              <legend></legend>
+              <label for="userlandmark">LandMark</label>
+              <div class="form-input form-control">
+                <i class="bx bx-location-plus box-icons"></i>
+                <input type="text" placeholder="LandMark" id="userlandmark" />
+              </div>
+
+              <label for="usercity">City</label>
+              <div class="form-input form-control">
+                <i class="bx bxs-city"></i>
+                <input type="text" placeholder="City" id="usercity" />
+              </div>
+
+              <label for="userstate">State</label>
+              <div class="form-input form-control">
+                <i class="bx bxs-buildings"></i>
+                <input type="text" placeholder="State" id="userstate" />
+              </div>
+
+              <label for="userpostalcode">Postal Code</label>
+              <div class="form-input form-control">
+                <i class="bx bx-current-location"></i>
+                <input
+                  type="text"
+                  placeholder="Postal Code"
+                  id="userpostalcode"
+                />
+              </div>
+              <div class="form-button">
+                <button onclick="checkout()">Proceed To Checkout</button>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- item displayin section -->
+    <section>
+      <div class="login-section create-section" id="payment">
+        <div class="sell-text text-left">
+          <p>Payment <span>Details</span></p>
+        </div>
+        <div class="login-right login-main payment-section">
+          <h1 id="Login2" class="login">Payment</h1>
+          <div class="forms form-flex">
+            <fieldset class="form-fieldset payment-fieldset">
+              <legend>Payment Information</legend>
+              <label for="credit">Credit Card Number</label>
+              <div class="form-input form-control">
+                <i class="bx bx-user-circle"></i>
+                <input
+                  type="text"
+                  placeholder="Credit Card Number"
+                  id="credit"
+                />
+              </div>
+
+              <label for="cvv">CVV</label>
+              <div class="form-input form-control">
+                <i class="bx bx-phone-call"></i>
+                <input type="text" placeholder="CVV" id="cvv" />
+              </div>
+
+              <label for="usergmail">Expiry </label>
+              <div class="form-input form-control">
+                <i class="bx bx-envelope"></i>
+                <input type="text" placeholder="month/year" id="expiry" />
+              </div>
+              <div class="form-button">
+                <button onclick="payment()">Continue</button>
+              </div>
+            </fieldset>
+          </div>
+          <p>OR</p>
+          <p class="continue">Continue With</p>
+          <div class="payment-icons">
+            <div class="payment-buttons">
+              <img src="{% static 'images/gpay.png' %}" alt="" />
+            </div>
+            <div class="payment-buttons">
+              <img src="{% static 'images/oaytm.png'  %}" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endblock body %}

@@ -1,0 +1,78 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block main-title %}Sudeeksha Pharmacy - Contact Us{% endblock %}
+{% block body %}
+<style>
+  .nav-icon{
+    display: none;
+  }
+</style>
+  <body>
+    <!-- contact -->
+    <section>
+      <div class="login-section">
+        <div class="login-left">
+          <!-- <p>Got a technical Issue</p> -->
+          <h1>Got a technical Issue</h1>
+          <h4>Fill the form we will solve in 30 minutes</h4>
+          <img src="{% static 'images/login-left.jpg' %}" alt="" />
+        </div>
+        <hr class="secondright" />
+        <div class="login-right">
+          <h1 id="contact" class="login">Any Issues</h1>
+          <div class="forms">
+            <label for="cname">Name</label>
+            <div class="form-input">
+              <i class="bx bx-user-circle"></i>
+              <input type="text" placeholder="Enter Your Name" id="cname" value="{{currentUser}}" disabled />
+            </div>
+            <label for="cemail">Email</label>
+            <div class="form-input">
+              <i class="bx bx-envelope"></i>
+              <input type="email" placeholder="Enter Your Email" id="cemail" value="{{currentUserEmail}}" disabled/>
+            </div>
+            <label for="">Message</label>
+            <div class="form-input">
+              <i class="bx bx-message"></i>
+              <input 
+                name=""
+                id="cmessage"
+                cols="20"
+                rows="2"
+                placeholder="Enter Your Message"
+                class='input-text'
+              >
+            </div>
+            <input type="hidden" id="contact_user_id" value="{{currentUserId}}">
+            <div class="form-button">
+              <button onclick="contact()">Contact</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    </body>
+<script>
+  function contact() {
+  let contact_user_id = $("#contact_user_id").val();
+  let cname = $("#cname").val();
+  let cemail = $("#cemail").val();
+  let cmessage = $("#cmessage").val();
+  $.ajax({
+    type:"POST",
+    url:"/contact_box/",
+    data:{"contactid":contact_user_id, "cname":cname, "cemail":cemail, "cmessage":cmessage},
+    success:function(data){
+      if(data['status'] == 'pass'){
+          $(".label").css('color','green');
+          $(".form-input").css('border-color','green');
+          $("#contact").text("Sent Successfull").css('color','green')
+      }
+        else{
+          $("#contact").text("Sending Failed").css('color','red')
+        }
+      }
+    })
+  }
+</script>
+    {% endblock  %}

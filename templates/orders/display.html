@@ -1,0 +1,233 @@
+  {% extends 'customer/index.html' %}
+{% load static %}
+{% block body %}
+<head>
+    <style>
+      .hidden-inputs-important  input{
+            display: none;
+        }
+        .nav-icon{
+          display: none;
+        }
+    </style>
+</head>
+    <!-- sell section -->
+    <section>
+      <div class="login-section create-section">
+        <div class="sell-text text-left">
+          <p>Place Your <span>Order</span></p>
+          <h5>
+            A seller account is required to provide a structured way for
+            individuals or businesses to manage and track their sales,
+            inventory, and customer interactions on a platform.
+          </h5>
+          <!-- <div class="create-button">
+            <button>Contact Us</button>
+          </div> -->
+        </div>
+        <div class="login-right login-main">
+          <h1 id="Login" class="login">Enter Your Details</h1>
+          <div class="forms form-flex">
+            {% csrf_token %}
+            <fieldset class="form-fieldset">
+              <legend>User Information</legend>
+              <label for="user">Your Name</label>
+              <div class="form-input form-control">
+                <i class="bx bx-user-circle"></i>
+                <input type="text" placeholder="User" id="user" />
+              </div>
+
+              <label for="userphone">Your Phone</label>
+              <div class="form-input form-control">
+                <i class="bx bx-phone-call"></i>
+                <input type="text" placeholder="Phone" id="userphone"  value=""/>
+              </div>
+
+              <label for="usergmail">Email </label>
+              <div class="form-input form-control">
+                <i class="bx bx-envelope"></i>
+                <input type="text" placeholder="Email Address" id="usergmail" value="{{currentUserEmail}}" />
+              </div>
+
+              <label for="useraddress">Address</label>
+              <div class="form-input form-control">
+                <i class="fa-regular fa-address-book"></i>
+                <input type="text" placeholder="Address" id="useraddress" />
+              </div>
+
+              <label for="useralternate">Alternate Ph NO</label>
+              <div class="form-input form-control">
+                <i class="bx bx-phone-call"></i>
+                <input
+                  type="text"
+                  placeholder="Alternate Phone NO"
+                  id="useralternate"
+                />
+              </div>
+            </fieldset>
+            <fieldset class="form-fieldset">
+              <legend></legend>
+              <label for="userlandmark">LandMark</label>
+              <div class="form-input form-control">
+                <i class="bx bx-location-plus box-icons"></i>
+                <input type="text" placeholder="LandMark" id="userlandmark" />
+              </div>
+
+              <label for="usercity">City</label>
+              <div class="form-input form-control">
+                <i class="bx bxs-city"></i>
+                <input type="text" placeholder="City" id="usercity" />
+              </div>
+
+              <label for="userstate">State</label>
+              <div class="form-input form-control">
+                <i class="bx bxs-buildings"></i>
+                <input type="text" placeholder="State" id="userstate" />
+              </div>
+
+              <label for="userpostalcode">Postal Code</label>
+              <div class="form-input form-control">
+                <i class="bx bx-current-location"></i>
+                <input
+                  type="text"
+                  placeholder="Postal Code"
+                  id="userpostalcode"
+                />
+              </div>
+ 
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- item displayin section -->
+    <section>
+      <div class="login-section create-section" id="payment">
+        <div class="sell-text text-left">
+          <p>Payment <span>Details</span></p>
+        </div>
+        <div class="login-right login-main payment-section">
+          <h1 id="Login2" class="login">Payment</h1>
+          <div class="forms form-flex">
+            <fieldset class="form-fieldset payment-fieldset">
+              <legend>Payment Information</legend>
+              <label for="credit">Credit Card Number</label>
+              <div class="form-input form-control">
+                <i class="bx bx-user-circle"></i>
+                <input
+                  type="text"
+                  placeholder="Credit Card Number"
+                  id="credit"
+                />
+              </div>
+
+              <label for="cvv">CVV</label>
+              <div class="form-input form-control">
+                <i class="bx bx-phone-call"></i>
+                <input type="text" placeholder="CVV" id="cvv" />
+              </div>
+
+              <label for="usergmail">Expiry </label>
+              <div class="form-input form-control">
+                <i class="bx bx-envelope"></i>
+                <input type="text" placeholder="month/year" id="expiry" />
+              </div>
+              <div class="form-button">
+                <button onclick="checkout2()" type="submit">Place</button>
+              </div>
+            </fieldset>
+          </div>
+          <p>OR</p>
+          <p class="continue">Continue With</p>
+          <div class="payment-icons">
+            <div class="payment-buttons">
+              <img src="{% static 'images/gpay.png' %}" alt="" />
+            </div>
+            <div class="payment-buttons">
+              <img src="{% static 'images/oaytm.png'  %}" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+<div class="hidden-inputs-important ">
+    <p><input type="text" id="med_id" value="{{allmed.med_id}}" /></p>
+    <p><input type="text" id="med_name" value="{{allmed.generic_name}}"></p>
+    <p><input type="text" id="user_id" value="{{currentUserId}}"/></p>  
+</div>
+<script>
+// Function to get the CSRF token from the cookies
+function getCSRFToken() {
+    let cookieValue = null;
+    let name = 'csrftoken';
+    if (document.cookie && document.cookie !== '') {
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            // Does this cookie string begin with the 'csrftoken' name?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Include CSRF token in the AJAX request
+function checkout2() {
+    let med_id = $("#med_id").val();
+    let user_id = $("#user_id").val();
+    let supplier_id = $("#supplier_id").val();
+    let user_name = $("#user").val();
+    let user_phone = $("#userphone").val();
+    let user_email = $("#usergmail").val();
+    let user_address = $("#useraddress").val();
+    let user_alternate_phone = $("#useralternate").val();
+    let user_landmark = $("#userlandmark").val();
+    let user_city = $("#usercity").val();
+    let user_state = $("#userstate").val();
+    let user_postal_code = $("#userpostalcode").val();
+    let credit_card_number = $("#credit").val();
+    let cvv = $("#cvv").val();
+    let expiry = $("#expiry").val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/order_cart/',
+        headers: { 'X-CSRFToken': getCSRFToken() },  // Include the CSRF token here
+        data: {
+            "med_id": med_id,
+            "user_id": user_id,
+            "supplier_id": supplier_id,
+            "user_name": user_name,
+            "user_phone": user_phone,
+            "user_email": user_email,
+            "user_address": user_address,
+            "user_alternate_phone": user_alternate_phone,
+            "user_landmark": user_landmark,
+            "user_city": user_city,
+            "user_state": user_state,
+            "user_postal_code": user_postal_code,
+            "credit_card_number": credit_card_number,
+            "cvv": cvv,
+            "expiry": expiry
+        },
+        success: function (data) {
+            if (data["status"] === "pass") {
+                alert("Order placed successfully!");
+                window.location.href = '/orderPlaced/'
+                // window.location.href = '/view_orders/'+encodeURIComponent(data['currentUserId'])
+            } else {
+                alert("Order placement failed: " + data.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log("Error: " + error);
+            alert("An error occurred while processing your request.");
+        }
+    });
+}
+
+</script>
+{% endblock body %}

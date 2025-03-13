@@ -1,0 +1,128 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block main-title %}Sudeeksha Pharmacy - Login{% endblock %}
+{% block body %}
+
+<!-- hero-login-section -->  
+<section>
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  <div class="login-section">
+    <div class="login-left">
+      <p>Welcome Back to</p>
+      <h1>Sudeeksha Pharmacy</h1>
+      <h4>Please Login to continue</h4>
+      <img src="{% static 'images/login-left.jpg' %}" alt="">
+    </div>
+    <hr class="secondright">
+    <div class="login-right">
+      <h1 id="Login" class="login">Login to Your Account</h1>
+      <div class="forms">
+        <label for="" class="label">Email *</label>
+        <div class="form-input">
+          <i class="bx bx-envelope"></i>
+          <input type="email" placeholder="Enter Your Email" id="mail" name="mail" />
+        </div>
+        
+        <label for="" class="label">Password *</label>
+        <div class="form-input">
+          <i class="bx bx-lock"></i>
+          <input type="password" placeholder="Enter Your Password" id="input" name="input" />
+          <button class="icon" disabled>
+            <i
+              id="eye"
+              onclick="showIcon()"
+              class="fa-solid fa-eye-slash icon-slash"
+            ></i>
+          </button>
+        </div>
+        
+        <!-- <label for="role">Role</label>
+        <div class="form-input">
+          <i class='bx bx-user-plus'></i>
+          <select id="role" class="role-select">
+            <option value="admin">Admin</option>
+            <option value="seller">Seller</option>
+          </select>
+        </div> -->
+        
+        
+        <div class="form-input form-checkbox">
+          <input type="checkbox" />
+          <p>Remember Me</p>
+          <span>Forgot Password</span>
+        </div>
+        
+        <div class="form-button">
+          <button type="submit" onclick="loginftn()">Log In</button>  <!-- Ensure type is 'button' to prevent form submit -->
+        </div>
+        
+        <p class="account"> Don't have an account? <a href="/signup">Create an account <i class="fa-solid fa-icon fa-arrow-up-right-from-square"></i></a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CSRF token inclusion and AJAX script -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  function loginftn(){
+    let email = $.trim($("#mail").val());
+    let password = $.trim($("#input").val());
+    if(!email || !password){
+      $(".form-input").css('border-color','red')
+      $("#Login").html("Please Enter Your Email and Password").css('color','red')
+      $(".label").css('color','red')
+    }
+    else{
+      $("#Login").html('Invalid Credentials').css('color','red');
+    }
+    $.ajax({
+      type: "POST",
+      url: "{% url 'login_check' %}",
+      data: {
+        "mail": email,
+        "passw": password,
+      },
+      success: function(data){
+        if (data["status"] === "pass") {
+          $("#Login").text("Login SuccessFull").css('color','green');
+        $(".label").css('color','green');
+        $(".form-input").css('border-color','green');
+         if(data["role"] == 'admin'){
+        setTimeout(() => {
+          window.location.replace('/admin_dashboard/')
+        }, 2000);
+         }
+         else if(data['role'] == 'customer'){
+           setTimeout(() => {
+          window.location.replace("/index/"+encodeURIComponent(data['cid']));
+        }, 2000);
+         }
+         else if(data['role'] == 'seller'){
+          window.location.replace("/index/"+encodeURIComponent(data['cid']));
+         }
+         else if(data['role'] == 'pharmacist'){
+          window.location.replace('/pharmacist')
+         }
+        } 
+        else {
+            // alert("Login Failed");
+         
+
+        }
+      },
+      error: function() {
+        // alert("An error occurred. Please try again.");
+      }
+    });
+  }
+</script>
+
+{% endblock %}

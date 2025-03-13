@@ -1,0 +1,58 @@
+# Byte-compiled and cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+*.egg-info/
+*.egg
+
+# Django specific
+db.sqlite3  # Ignore SQLite database
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+migrations/*  # Ignore migrations, but keep __init__.py
+!migrations/__init__.py
+
+# Static and media files
+staticfiles/
+media/
+node_modules/
+
+# IDE and editor settings
+.vscode/
+.idea/
+*.sublime-workspace
+
+# Environment variables
+.env
+*.env
+
+# Celery task queue
+celerybeat-schedule
+
+# Coverage reports
+.coverage
+htmlcov/
+*.cover
+nosetests.xml
+coverage.xml
+*.py,cover
+
+# Pip dependency resolution
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Compiled files
+*.so
+*.DS_Store
+
+# Docker files (if using Docker)
+*.dockerfile
+docker-compose.override.yml

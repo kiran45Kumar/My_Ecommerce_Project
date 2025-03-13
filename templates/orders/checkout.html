@@ -1,0 +1,220 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block body %}
+
+    <title>Your Cart</title>
+    <style>
+        .nav-icon{
+            display: none;
+          }
+        h1{
+            text-align: center;
+            color: #333;
+            font-size: 2rem;
+        }
+
+        .cart-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .cart-table th, .cart-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-table th {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+
+        .cart-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .cart-table .quantity-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 5px 10px;
+            background-color: #f1f1f1;
+        }
+
+        .cart-table .quantity-control button {
+            background: #007bff;
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .cart-table .quantity-control button:hover {
+            background: #0056b3;
+        }
+
+        .cart-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2rem;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 20px;
+        }
+
+        .cart-summary .total-price {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .btn-checkout {
+            background: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn-checkout:hover {
+            background: #218838;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            font-size: 1.2rem;
+            margin-top: 50px;
+        }
+        #removed-message {
+    display: none; 
+    background-color: #f8d7da; 
+    color: #721c24;  
+    border: 1px solid #f5c6cb; 
+    padding: 10px 20px;
+    margin: 0 auto;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    position: fixed;
+    top: 20%; 
+    left: 50%;
+    transform: translateX(-50%); 
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content; 
+}
+    </style>
+</head>
+<body>
+    <div id="removed-message">Product Removed from Cart</div>
+<div class="container">
+    <h1>Your Cart</h1>
+    {% if cart_items %}
+    <table class="cart-table">
+        <thead>
+            <tr>
+                <th>Medicine</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Added at</th>
+                <th>Buy</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in cart_items %}
+            <tr data-medicine-id="{{ item.medicine.id }}">
+                <td>{{ item.medicine.generic_name }}</td>
+                <td>
+                    <div class="quantity-control">
+                        <button onclick="updateQuantity('{{ item.medicine.med_id }}', 'decrement')">-</button>
+                        <span class="quantity">{{ item.quantity }}</span>
+                        <button onclick="updateQuantity('{{ item.medicine.med_id }}', 'increment')">+</button>
+                    </div>
+                </td>
+                <td class="cart-item-price">₹{{ item.medicine.price }}</td>
+                <td class="cart-item-total total-price">Total Price: ₹{{ total_price }}</td>
+                <td class="cart-item-total total-price"> {{item.created_at}}</td>
+                <td>  <a href="/display/{{currentUserId}}/{{item.medicine.med_id}}/" class="btn-checkout">Buy Now</a></td>
+                <td>  <a onclick="deleteCart('{{currentUserId}}','{{item.id}}')" class="btn-checkout">Remove</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="cart-summary">
+        <p></p>
+    </div>
+    {% else %}
+    <p class="empty-cart">Your cart is empty.</p>
+    {% endif %}
+</div>
+
+<script>
+    function updateQuantity(medicineId, action) {
+        fetch('/update-cart/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `medicine_id=${medicineId}&action=${action}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert(data.error);
+            } else {
+                const row = document.querySelector(`tr[data-medicine-id="${medicineId}"]`);
+                row.querySelector('.quantity').textContent = data.new_quantity;
+                row.querySelector('.cart-item-total').textContent = '₹' + data.total_price;
+                document.querySelector('.total-price').textContent = 'Total Price: ₹' + calculateTotalPrice();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function calculateTotalPrice() {
+        let total = 0;
+        document.querySelectorAll('.cart-item-total').forEach(item => {
+            total += parseFloat(item.textContent.replace('₹', ''));
+        });
+        return total;
+    }
+    function deleteCart(cid, id) {
+        $.ajax({
+            type:"POST",
+            url:'/delete_cart/',
+            data:
+            {
+                "id":id
+            },
+            success: function (data) { 
+                if(data['status'] == 'pass'){
+                    const successMessage = document.getElementById('removed-message');
+                    successMessage.style.display = 'block';
+                    setTimeout(function() {
+                    successMessage.style.display = 'none';
+                    window.location.href = '/cart_page/'+encodeURIComponent(cid)+'/';
+                }, 2000);
+                }
+             }
+        })
+      }
+</script>
+
+{% endblock %}

@@ -1,0 +1,112 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block main-title %}Sudeeksha Pharmacy - Medicines{% endblock %}
+{% block body %}
+<style>
+ #success-message {
+    display: none; 
+    background-color: #d4edda; 
+    color: #155724;  
+    border: 1px solid #c3e6cb; 
+    padding: 10px 20px;
+    margin: 0 auto;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    position: fixed;
+    top: 20%; 
+    left: 50%;
+    transform: translateX(-50%); 
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content; 
+}
+.nav-icon{
+    display: none;
+  }
+</style>
+<section>
+    
+    <div id="success-message">Product Added to cart Successfully</div>
+    <div class="search-center">
+        <div class="search-section">
+            <i class="bx bx-search-alt-2"></i>
+            <input type="search" id="searchInput" placeholder="Search Medicines..">
+        </div>
+    </div>
+
+    <div class="products-section">
+        {% for medicine in med_data %}
+        <div class="products" data-title="{{ medicine.generic_name|lower }}" >
+            <div class="product-card">
+                <div class="product-left">
+                    <img src="{{medicine.med_image.url}}" alt="" />
+                    <p id="medicine-title">{{ medicine.generic_name }}</p>
+                </div>
+            </div>
+            <div class="product-price">
+                <p id="med-price">&#8377;{{ medicine.price }}</p>
+                <p>(233)</p>
+                <p>12% off</p>
+            </div>
+            <button id="addToCartBtn" data-medicine-id="{{ medicine.med_id }}">Add to Cart</button>
+            <section>
+                <div class="display-none" style="display: none;">
+                    <p>{{ currentUser }}</p>
+                    <p><input type="text" id="customerId" value="{{ currentUserId}}"></p>
+                   
+                </div>
+            </section>
+        </div>
+        {% endfor %}
+    </div>
+    {% block medicines %}
+        
+    {% endblock medicines %}
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).on('input', '#searchInput', function() {
+    var searchQuery = $(this).val().toLowerCase();
+    $('.products').each(function() {
+        var title = $(this).data('title');
+        if (title.includes(searchQuery)) {
+            $(this).show();  // Show item if it matches the search query
+        } else {
+            $(this).hide();  // Hide item if it does not match
+        }
+    });
+});
+
+$(document).on('click', '#addToCartBtn', function() {
+    var medicineId = $(this).data('medicine-id');
+    var customerId = $('#customerId').val();  // Get customerId from the hidden input
+
+    $.ajax({
+        url: '/add-to-cart/',
+        type: 'POST',
+        data: {
+            'medicine_id': medicineId,
+            'quantity': 1,
+            'customer_id': customerId,  // Pass the customer_id here
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            // alert("Medicine added to cart successfully!");
+            const successMessage = document.getElementById('success-message');
+                successMessage.style.display = 'block';
+
+                // Hide the message after 3 seconds
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                    window.location.href = '/index/'+encodeURIComponent(customerId);  // Reload the homepage if needed
+                }, 3000);
+        },
+        error: function(response) {
+            alert("Failed to add medicine to cart.");
+        }
+    });
+});
+</script>
+{% endblock body %}

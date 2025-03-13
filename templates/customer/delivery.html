@@ -1,0 +1,80 @@
+{% extends 'customer/admin.html' %}
+{% block sidebar %}
+<style>
+    .flex-container {
+        display: flex;
+        flex: 5;
+        margin: 5%;
+    }
+
+    .medicine-table {
+        width: 100%; /* Ensures the table takes the full width of the flex container */
+        border-collapse: collapse;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .medicine-table thead tr {
+        background-color: #000;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    .medicine-table th {
+        padding: 10px;
+        border: 3px solid #525151; /* Black border */
+    }
+
+    .medicine-table td {
+        padding: 10px;
+        border: 3px solid #746f6f; /* Black border */
+        background-color: #000; /* Black background for td */
+        color: #ffffff; /* White text for td */
+    }
+
+    .medicine-table tbody tr:nth-child(even) td {
+        background-color: #111; /* Slightly lighter black for even rows */
+    }
+
+    .medicine-table tbody tr:hover {
+        background-color: #222; /* Darker grey on hover */
+    }
+
+    .medicine-table tbody tr:hover td {
+        background-color: #222; /* Darker grey for hovered rows */
+    }
+</style>
+
+<div class="flex-container orders">
+    <table class="medicine-table">
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Order Date</th>
+                <th>User Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.order_id }}</td>
+                <td>{{ order.product }}</td>
+                <td>&#8377;{{ order.total_amount }}</td>
+                <td>{{ order.status }}</td>
+                <td>{{ order.order_date }}</td>
+                <td>{{ order.user_name }}</td>
+                <td>
+                    <button class="order-button">View Details</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

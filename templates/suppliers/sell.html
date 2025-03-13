@@ -1,0 +1,172 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block body %}
+
+<body>
+  <!-- sell section -->
+  <section>
+    <div class="login-section">
+      <div class="sell-text">
+        <p>Sell &<span> Earn</span></p>
+        <h6>
+          <i class="fa-solid fa-triangle-exclamation"></i> You need a seller
+          account to sell your medicines
+        </h6>
+        <div class="features-section">
+          <h5>Features and Benefits of selling</h5>
+          <ul class="features" id="feature">
+            <li>
+              <i class="fa-regular fa-circle-check"></i> Easy Listing Creation
+            </li>
+            <li>
+              <i class="fa-regular fa-circle-check"></i> Customizable Product
+              Options
+            </li>
+            <li>
+              <i class="fa-regular fa-circle-check"></i> Secure Transactions
+            </li>
+            <li>
+              <i class="fa-regular fa-circle-check"></i> Real-Time analytics
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="login-right">
+        <h1 id="Login" class="login">Create a Seller account</h1>
+        <div class="forms">
+          <label for="sell-name">Name</label>
+          <div class="form-input">
+            <i class="bx bx-user-circle"></i>
+            <input
+              type="text"
+              placeholder="Enter Your Name"
+              id="sell-name"
+              name="sell-name"
+            />
+          </div>
+          <label for="sell-phone">Phone</label>
+          <div class="form-input">
+            <i class="bx bx-phone-call"></i>
+            <input
+              type="text"
+              placeholder="Enter Your Phone No"
+              id="sell-phone"
+              name="sell-phone"
+            />
+          </div>
+          <label for="sell-email">Email</label>
+          <div class="form-input">
+            <i class="bx bx-envelope"></i>
+            <input
+              type="text"
+              placeholder="Enter Your Email"
+              id="sell-email"
+              name="sell-email"
+            />
+          </div>
+          <label for="company-name">Company Name</label>
+          <div class="form-input">
+            <i class="bx bxs-buildings"></i>
+            <input
+              type="text"
+              placeholder="Enter Your Company Name"
+              id="company-name"
+              name="company-name"
+            />
+          </div>
+          <label for="sell-gstno">GST NO</label>
+          <div class="form-input">
+            <i class="bx bx-phone-call"></i>
+            <input
+              type="text"
+              placeholder="Enter the GST No"
+              id="sell-gstno"
+              name="sell-gstno"
+            />
+          </div>
+          <label for="sell-address">Address</label>
+          <div class="form-input">
+            <i class="fa-regular fa-address-book"></i>
+            <input
+              type="text"
+              placeholder="Enter Your Address"
+              id="sell-address"
+              name="sell-address"
+            />
+          </div>
+          <div class="form-input form-check">
+            <input
+              type="checkbox"
+              id="address"
+              name="checkbox"
+            />
+            <p>I accept the <a href="/terms.html">terms and conditions</a></p>
+          </div>
+          <div class="form-input form-check" style="display: none;">
+            <input
+              type="hidden"
+              id="input-hidden"
+              name="input-hidden"
+              value="{{ currentUserId }}"
+            />
+          </div>
+          <div class="form-button">
+            <button onclick="createSeller()" type="submit">Create</button> <!-- Changed type to button to prevent form submission -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Assuming supplier_id is correctly passed from the backend
+    const supplierId = parseInt("{{ supplier_id }}", 10) || 0; 
+
+    function createSeller() {
+      // Gather form data
+      let sellerName = $("#sell-name").val();
+      let sellerEmail = $("#sell-email").val();
+      let sellerPhone = $("#sell-phone").val();
+      let sellerCompany = $("#company-name").val();
+      let sellerGstNo = $("#sell-gstno").val();
+      let sellerAddress = $("#sell-address").val();
+      let Customer_id = $("#input-hidden").val()
+
+      // CSRF token extraction
+
+
+      // Ensure required fields are filled
+      if (!sellerName || !sellerEmail || !sellerPhone || !sellerCompany || !sellerGstNo || !sellerAddress) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      $.ajax({
+        type: "POST",
+        url: "/create_seller/",
+        data: JSON.stringify({
+          supplier_id: supplierId,
+          sellername: sellerName,
+          selleremail: sellerEmail,
+          sellerphone: sellerPhone,
+          sellercompany: sellerCompany,
+          sellergstNo: sellerGstNo,
+          selleraddress: sellerAddress,
+          customer_id: Customer_id,
+        }),
+        contentType: "application/json", // Set the content type to JSON
+        success: function (data) {
+          if (data.status == "pass") {
+            window.location.replace("/dashboard/"+encodeURIComponent(data['supplier_id'])+'/suppliers');
+          } else {
+            alert("Failed: " + (data.message || "Unknown error occurred."));
+          }
+        },
+        error: function (xhr, status, error) {
+          alert("Error");
+        }
+      });
+    }
+  </script>
+  {% endblock body %}
+</body>

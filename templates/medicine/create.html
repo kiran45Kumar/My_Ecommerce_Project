@@ -1,0 +1,165 @@
+{% extends 'customer/index.html' %}
+{% block main-title %}Sudeeksha Pharmacy - Create{% endblock %}
+{% block body %}
+    <style>
+      .nav-icon{
+        display: none;
+      }
+    </style>
+
+  <!-- sell section -->
+  <section>
+    <div class="login-section create-section">
+      <div class="sell-text text-left">
+        <p>Create Your <span>Product</span></p>
+        <h5>
+          A seller account is required to provide a structured way for
+          individuals or businesses to manage and track their sales,
+          inventory, and customer interactions on a platform.
+        </h5>
+        <!-- <div class="create-button">
+          <button>Contact Us</button>
+        </div> -->
+      </div>
+      <div class="login-right login-main">
+        <h1 id="Login" class="login">Create your Product</h1>
+        <div class="forms form-flex" >
+          <!-- Fieldset for General Information -->
+          <fieldset class="form-fieldset">
+            <legend>General Information</legend>
+            <label for="gname">Generic Name</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Generic Name" id="gname" />
+            </div>
+
+            <label for="brand">Brand Name</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Brand Name" id="brand" />
+            </div>
+            <label for="brand">Medicine Image</label>
+            <div class="form-input form-control">
+              <input type="file" placeholder="Medicine Image" id="medimage" />
+            </div>
+
+            <label for="category">Category</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Tablets/Capsules/" id="category"
+              />
+            </div>
+
+            <label for="price">Price</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Price" id="price" />
+            </div>
+
+            <label for="address">Quantity</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Quantity" id="quantity" />
+            </div>
+          </fieldset>
+
+          <!-- Fieldset for Drug Details -->
+          <fieldset class="form-fieldset">
+            <legend>Drug Details</legend>
+            <label for="Dosage">Dosage-form</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Dosage form" id="Dosage" />
+            </div>
+
+            <label for="Composition">Composition</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Composition" id="Composition" />
+            </div>
+
+            <label for="Indications">Indications</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Indications" id="Indication" />
+            </div>
+
+            <label for="Contra">Contra-Indications</label>
+            <div class="form-input form-control">
+              <input
+                type="text"
+                placeholder="Contra-Indications"
+                id="Contra"
+              />
+            </div>
+
+            <label for="sid">Side Effects</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Side Effects" id="side" />
+            </div>
+
+            <label for="barcode">Barcode</label>
+            <div class="form-input form-control">
+              <input type="text" placeholder="Barcode" id="barcode" />
+            </div>
+            <div class="">
+              <input type="block" id="input-hidden" value="{{ supplier_id }}"  style="display: none;"/>
+            </div>
+          </fieldset>
+
+          <!-- Fieldset for Agreement -->
+          <fieldset class="form-fieldset">
+            <legend>Agreement</legend>
+            <div class="form-input form-check">
+              <input type="checkbox" id="terms" />
+              <label for="terms"
+                >I accept the
+                <a href="/terms.html">terms and conditions</a></label
+              >
+            </div>
+            <div class="form-button">
+              <button onclick="createUser()">Create</button>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+    </div>
+  </section>
+<script>
+        function createUser(){
+        let gname = $("#gname").val();
+        let brand = $("#brand").val();
+        let medimage = $("#medimage").val();
+        let category = $("#category").val();
+        let price = $("#price").val();
+        let quantity = $("#quantity").val();
+        let dosage = $("#Dosage").val();
+        let composition = $("#Composition").val();
+        let indication = $("#Indication").val();
+        let contra = $("#Contra").val();
+        let side = $("#side").val();
+        let barcode = $("#barcode").val();
+        let Supplier_id = $("#input-hidden").val()
+        $.ajax({
+          type:"POST",
+          url:"{% url 'create_medicine' %}",
+          data: JSON.stringify({
+            gname:gname,
+            mbrand:brand,
+            medimage:medimage,
+            category:category,
+            price:price,
+            quantity:quantity,
+            dosage:dosage,
+            composition:composition,
+            indication:indication,
+            contra:contra,
+            side:side,
+            barcode:barcode,
+            supplier_id:Supplier_id,
+          }),
+          contentType:'application/json',
+          success:function(data){
+            if (data['status']=='pass'){
+              alert('Success')
+            }
+            else if(data['status']=='fail'){
+              alert("Failed")
+            }
+          }
+        })
+      }
+</script>
+{% endblock  %}

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #343a40;
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+
+        .navbar a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        .navbar a:hover {
+            background-color: #495057;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 250px;
+            background-color: #343a40;
+            padding-top: 60px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar a {
+            padding: 15px 20px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #fff;
+            display: block;
+        }
+
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        /* Main Dashboard */
+        .main-dashboard {
+            margin: 20px auto;
+            padding: 20px;
+            max-width: 1200px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+            color: #333;
+            font-size: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        .sidebar button{
+            padding: 20px 35px;
+            background: #000;
+            color: white;
+            border: 1px solid black;
+            margin-left: 20px ;
+            outline: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .sidebar button:hover{
+            background: transparent;
+            transition: all 0.4s ease-in;
+        }
+
+        /* Responsive Sidebar */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .sidebar a {
+                float: left;
+                padding: 10px;
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+
+            .content {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <h1>Seller Dashboard</h1>
+        <a href="#">Profile</a>
+        <a href="#">Logout</a>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#products">Products</a>
+        <a href="#orders">Orders</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#settings">Settings</a>
+        <button onclick="createMedicine('{{sellerdata.supplier_id}}')">New Product</button>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content">
+        <!-- Dashboard Info -->
+        <div class="main-dashboard" id="dashboard">
+            <h1>{{sellerdata.supplier_name}}'s Dashboard</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Supplier Name</td>
+                        <td>{{ sellerdata.supplier_name }}</td>
+                    </tr>
+                    <tr>
+                        <td>Phone Number</td>
+                        <td>{{ sellerdata.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td>Email</td>
+                        <td>{{ sellerdata.email }}</td>
+                    </tr>
+                    <tr>
+                        <td>Company Name</td>
+                        <td>{{ sellerdata.CompanyName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Company GST</td>
+                        <td>{{ sellerdata.CompanyGst }}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>{{ sellerdata.address }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- Seller Products -->
+        <div class="seller-products" id="products">
+          <h1>Seller Products</h1>
+          {% for medicine in medicines %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Generic Name</td>
+                        <td>{{medicine.generic_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Image</td>
+                        <td>{{medicine.med_image}}</td>
+                    </tr>
+                    <tr>
+                        <td>Brand Name</td>
+                        <td>{{medicine.brand_name}}</td>
+                    </tr>
+                    <tr>
+                        <td>Category</td>
+                        <td>{{medicine.category}}</td>
+                    </tr>
+                    <tr>
+                        <td>Dosage Form</td>
+                        <td>{{medicine.dosage_form}}</td>
+                    </tr>
+                    <tr>
+                        <td>Price</td>
+                        <td>$ {{medicine.price}}</td>
+                    </tr>
+                    <tr>
+                        <td>Quantity</td>
+                        <td>{{medicine.quantity}}</td>
+                    </tr>
+                    <tr>
+                        <td>Composition</td>
+                        <td>{{medicine.composition}}</td>
+                    </tr>
+                    <tr>
+                        <td>Indications</td>
+                        <td>{{medicine.indications}}</td>
+                    </tr>
+                    <tr>
+                        <td>Contraindications</td>
+                        <td>{{medicine.contraindications}}</td>
+                    </tr>
+                    <tr>
+                        <td>Side Effects</td>
+                        <td>{{medicine.side_effects}}</td>
+                    </tr>
+                    <tr>
+                        <td>Barcode</td>
+                        <td>{{medicine.barcode}}</td>
+                    </tr>
+                    <tr>
+                        <td>Created At</td>
+                        <td>{{medicine.created_at}}</td>
+                    </tr>
+                    <tr>
+                        <td>Updated At</td>
+                        <td>{{medicine.update_at }}</td>
+                    </tr>
+                </tbody>
+              </table>
+              {% endfor %}
+        </div>
+    </div>
+    <script>
+        function createMedicine(supplier_id){
+            window.location.href = '/dashboard/'+encodeURIComponent(supplier_id)+"/create"
+        }
+    </script>
+</body>
+</html>

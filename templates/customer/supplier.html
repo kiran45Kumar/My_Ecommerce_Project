@@ -1,0 +1,77 @@
+{% extends 'customer/admin.html' %}
+{% block sidebar %}
+    <title>Suppliers Table</title>
+    <style>
+    .flex-container {
+        display: flex;
+        flex: 5;
+        margin-top: 20%;
+    }
+
+    .medicine-table {
+        width: 100%; /* Ensures the table takes the full width of the flex container */
+        border-collapse: collapse;
+        font-size: 15px;
+        font-family: 'Inter', sans-serif;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .medicine-table thead tr {
+        background-color: #000;
+        color: #ffffff;
+        text-align: left;
+    }
+
+    .medicine-table th {
+        padding: 5px;
+        border: 3px solid #2c2a2a; 
+    }
+
+    .medicine-table td {
+        padding: 5px;
+        border: 3px solid #1f1e1e; 
+        background-color: #000; 
+        color: #ffffff;
+    }
+
+    </style>
+</head>
+<body>
+
+<h2>Suppliers List</h2>
+
+<table class="medicine-table">
+    <thead>
+        <tr>
+            <th>Supplier ID</th>
+            <th>Supplier Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+            <th>Company Name</th>
+            <th>Company GST</th>
+            <th>Customer ID</th>
+            <th>Address</th>
+            <th>Created At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for supplier in suppliers %}
+        <tr>
+            <td>{{ supplier.supplier_id }}</td>
+            <td>{{ supplier.supplier_name }}</td>
+            <td>{{ supplier.phone_number }}</td>
+            <td>{{ supplier.email }}</td>
+            <td>{{ supplier.CompanyName }}</td>
+            <td>{{ supplier.CompanyGst }}</td>
+            <td>{{ supplier.cid.cid }}</td>
+            <td>{{ supplier.address }}</td>
+            <td>{{ supplier.created_at }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="10">No suppliers found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

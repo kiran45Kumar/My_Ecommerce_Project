@@ -1,0 +1,198 @@
+{% extends 'customer/index.html' %}
+{% load static %}
+{% block main-title %}{{currentUser}} 's Dashboard{% endblock %}
+{% block body %}
+ <style>
+    .user-inputs input{
+        cursor:not-allowed;
+    }
+        .nav-icon{
+          display: none;
+        }
+ </style>
+ 
+<div class="delete-modal delete-modal-open" id="delete-modal">
+<div class="delete-main-modal">
+    <div class="delete-confirm">
+        <p id="delete">Are You Sure You Wanna Delete Your Account?? </p>
+        {% for cust in customer %}
+        <!-- <input type="text" id="phone{{cust.cid}}" value="{{cust.phone}}" disabled> -->
+       <div class="delete-cancel">
+        <p onclick="canceL()">Cancel</p>
+        <button class="btn btn-delete" onclick="deleteUser('{{cust.cid}}')">Delete</button>
+       </div>
+        {% endfor %}
+       </div>
+</div>
+</div>
+<div class="user-dashboard-section">
+    <div class="user-left">
+        <div class="user-img">
+           <img src="{% static 'images/profile.png' %}" alt="">
+        </div>
+        <div class="user-text">
+            <p>Hello,</p>
+            <h1>{{currentUser}}</h1>
+        </div>
+    </div>
+    <div class="user-right">
+        <div class="info">
+            <div class="user-info">
+                <h1>Personal Information</h1>
+                <p><i class='bx bx-edit-alt' onclick="OpenInputs(this)"></i></p>
+            </div>
+            <div class="user-inputs">
+                {% for cust in customer %}
+                <input type="text" id="name{{cust.cid}}" value="{{cust.name}}" disabled>
+                <button class="display-hidden btn" onclick="updateUser('{{cust.cid}}')">Save</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="info">
+            <div class="user-info">
+                <h1>First Name Last Name and Password</h1>
+                <p><i class='bx bx-edit-alt' onclick="OpenInputs(this)"></i></p>
+            </div>
+            <div class="user-inputs">
+                {% for cust in customer %}
+                <input type="text" id="fname{{cust.cid}}" value="{{cust.first_name}}" disabled>
+                <input type="text" id="lname{{cust.cid}}" value="{{cust.last_name}}" disabled>
+                <input type="text" id="password{{cust.cid}}" value="{{cust.password}}" disabled>
+                <button class="display-hidden btn" onclick="updateUser('{{cust.cid}}')">Save</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="info">
+            <div class="user-info">
+                <h1>Email Address</h1>
+                <p><i class='bx bx-edit-alt' onclick="OpenInputs(this)"></i></p>
+            </div>
+            <div class="user-inputs">
+                {% for cust in customer %}
+                <input type="text" id="email{{cust.cid}}" value="{{cust.email}}" disabled>
+                <button class="display-hidden btn" onclick="updateUser('{{cust.cid}}')">Save</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="info">
+            <div class="user-info">
+                <h1>Mobile Number</h1>
+                <p><i class='bx bx-edit-alt' onclick="OpenInputs(this)"></i></p>
+            </div>
+            <div class="user-inputs">
+                {% for cust in customer %}
+                <input type="text" id="phone{{cust.cid}}" value="{{cust.phone}}" disabled>
+                <button class="display-hidden btn" onclick="updateUser('{{cust.cid}}')">Save</button>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="delete-account">
+            <h1>Delete Your Account</h1>
+            <button onclick="toggleDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function deleteUser(id) { 
+    $.ajax({
+        type:"POST",
+        url:"/delete_account/",
+        data:
+        {
+            "id":id,
+        },
+        success:function(data){
+            if(data){
+                let deleteF = $("#delete")
+            deleteF.html('Account Deleted Successfully').css({'color':'green','transition':"all 0.2 ease-in"})
+                window.location.replace('/signup') 
+            }
+        }
+    })
+ }
+ function OpenInputs(element) {
+    const parentInfoDiv = $(element).closest('.info');
+    const inputField = parentInfoDiv.find('input');
+    const saveButton = parentInfoDiv.find('button');
+    if (inputField.is(':disabled')) {
+        inputField.removeAttr('disabled'); 
+        inputField.css('cursor', 'auto');  
+    } else {
+        inputField.attr('disabled', 'disabled'); 
+        inputField.css('cursor', 'not-allowed');
+    }
+    saveButton.toggle('display-hidden'); 
+ }
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+function updateUser(id) {
+    let name = $("#name" + id).val(); 
+    let email = $("#email" + id).val();
+    let phone = $("#phone" + id).val(); 
+    let fname = $("#fname" + id).val(); 
+    let lname = $("#lname" + id).val(); 
+    let password = $("#password" + id).val(); 
+
+    console.log("Sending data:", { id, name, email, phone }); // Log the values
+
+    $.ajax({
+        type: "POST",
+        url: "/update_user/",
+        data: {
+            "id": id,
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "fname":fname,
+            "lname":lname,
+            "password":password,
+            "csrfmiddlewaretoken": csrftoken // Ensure CSRF token is included
+        },
+        success: function(data) {
+            if (data.status === 'pass') {
+                // alert("Updated successfully");
+                window.location.reload()
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log("Error: " + error);
+        }
+    });
+}
+function toggleDelete() {
+    let id = $("#delete-modal");
+    id.toggle('delete-modal-open');
+  }
+function canceL(){
+    let id = $("#delete");
+    let modal = $("#delete-modal");
+    id.html('Cancelled By User').css({'color':'red','transition':"all 0.2 ease-in"})
+ 
+    setTimeout(() => {
+        window.location.reload() 
+        modal.css('opacity','0')
+    }, 3000);
+}
+</script>
+
+
+
+{% endblock body %}

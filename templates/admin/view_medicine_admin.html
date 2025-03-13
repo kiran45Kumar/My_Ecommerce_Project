@@ -1,0 +1,108 @@
+{% extends 'admin/index.html' %}
+{% load static  %}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+    {% block dashboard_content %}
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Table</h3>
+                    <p class="text-subtitle text-muted">For user to check they list</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/admin_dashboard/">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">View Vendor</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <!-- Hoverable rows start -->
+        <section class="section">
+            <div class="row" id="table-hover-row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-content">
+                            <!-- table hover -->
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Generic Name</th>
+                                            <th>Medicine Image</th>
+                                            <th>Brand Name</th>
+                                            <th>Category</th>
+                                            <th>Dosage Form</th>
+                                            <th>Price</th>
+                                            <th>Quantity</th>
+                                            <th>Compositions</th>
+                                            <th>Indications</th>
+                                            <th>Contra Indications</th>
+                                            <th>Side Effects</th>
+                                            <th>Barcode</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for medicine in medicines %}
+                                        <tr>
+                                            <td class="text-bold-500">{{medicine.generic_name}}</td>
+                                            <td class="text-bold-500"><img src="{{medicine.med_image.url}}" class="h-25 w-25" alt=""></td>
+                                            <td>{{medicine.brand_name}}</td>
+                                            <td class="text-bold-500">{{medicine.category}}</td>
+                                            <td>{{medicine.dosage_form}}</td>
+                                            <td>{{medicine.price}}</td>
+                                            <td>{{medicine.quantity}}</td>
+                                            <td>{{medicine.composition}}</td>
+                                            <td>{{medicine.indications}}</td>
+                                            <td>{{medicine.contraindications}}</td>
+                                            <td>{{medicine.side_effects}}</td>
+                                            <td>{{medicine.barcode  }}</td>
+                                            <td>
+                                                <button class="btn btn-danger" onclick="RemoveMedicine('{{medicine.med_id}}')">Remove</button>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <h4 class="card-title">No Medicines Found</h4>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="toast-container position-fixed top-0 end-0 p-3">
+                <div id="successToast" class="toast align-items-center text-success bg-success-subtle border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                  <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center">
+                      <i class="bi bi-check-circle me-2"></i> Successfully removed Medicine.
+                    </div>
+                    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                  </div>
+                </div>
+                    <!-- Error Toast -->
+                    <div id="errorToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                      <div class="d-flex">
+                        <div class="toast-body">
+                          <i class="bi bi-exclamation-circle"></i> Oops! Something went wrong.
+                        </div>
+                        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                      </div>
+                    </div>
+                  </div>
+        </section>
+        <!-- Hoverable rows end -->
+        {% endblock dashboard_content %}
+    </div>
+</div>
+</div>

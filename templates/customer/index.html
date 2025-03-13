@@ -1,0 +1,696 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block main-title %}Sudeeksha Pharmacy{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}" />
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/f3c81801f8.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    
+  </head>
+  <style>
+    .bx-chevron-down:hover{
+      transform: rotate(180deg);
+      transition: all 0.3s ease-in;
+    }
+    .user-modal{
+      position: absolute;
+      left: 83%;
+      top: 9%;
+      background: white;
+      box-shadow:  0px 1px 1px 1px silver;
+      padding: 20px;
+      border-radius: 5px;
+      z-index: 1;
+    }
+    .user-modal ul li{
+      list-style: none;
+      font-size: 16px;
+      margin: 17px;
+      cursor: pointer;
+    }
+    .user-modal ul p{
+      border-bottom: 1px solid gray;
+    }
+    .user-modal ul li:hover{
+      color: #28a475;
+      transition: all 0.2s ease-out;
+    }
+#success-message {
+    display: none;  /* Hidden by default */
+    background-color: #d4edda;  /* Light green background */
+    color: #155724;  /* Dark green text color */
+    border: 1px solid #c3e6cb;  /* Slightly darker green border */
+    padding: 10px 20px;
+    margin: 0 auto;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    position: fixed;
+    top: 20%;  /* Slightly below the top */
+    left: 50%;
+    transform: translateX(-50%);  /* Horizontal centering */
+    z-index: 1000;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: fit-content;  /* Adjust to content width */
+}
+.opacity-1{
+  display: none;
+}
+#user-text{
+  font-size: 1.4rem;
+  font-weight: 300;
+  cursor: pointer;
+}
+#user-text h1:hover{
+  text-decoration: underline;
+}
+.user-modal h1{
+  font-size: 16px;
+  text-align: center;
+  text-transform: uppercase;
+}
+.modal{
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content{
+  background-color: #f1f1f1;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 300px;
+  text-align: center;
+}
+.close{
+  color: #aaa;
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+}
+.close:hover, .close:focus{
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+button{
+  padding: 10px 20px;
+  background-color: #4cAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+#regionDisplay{
+  margin-top: 10px;
+}
+#pincodeinput{
+  padding: 10px;
+  width: 80%;
+  margin: 10px 0;
+}
+  </style>
+  <body>
+    <div id="success-message">Product Added to cart Successfully</div>
+    <div class="user-modal opacity-1" id="user-modal">
+      <h1>User Actions</h1>
+      <ul>
+        <p></p>
+        <li onclick="userAccount('{{currentUser}}','{{currentUserId}}')"><i class='bx bx-cog' ></i> &nbsp; My Profile</li>
+        <li onclick="viewOrders('{{currentUserId}}')"><i class='bx bxs-package' ></i> &nbsp;Orders</li>
+        <!-- <li> <i class='bx bxs-edit-alt'></i> &nbsp; Change Address</li> -->
+        <li onclick="logout()"><i class='bx bx-log-out'></i> &nbsp; Log Out</li>
+      </ul>
+    </div>
+    <!-- navbar section -->
+    <section class="top">
+      <div class="navbar-top-section">
+        <div class="nav-logo">
+          <h1>Sudeeksha Pharmacy</h1>
+        </div>
+        <div class="navbar-search">
+          <i class="bx bx-search-alt-2"></i>
+          <input type="search" placeholder="Search Medicines" />
+        </div>
+        <div class="nav-cart">
+          <div class="nav-icon delivery-to" id="deliveryTo">
+            <i class="bx bx-location-plus box-icons"></i>
+            <div class="nav-head">
+              {% if delivery %}
+                {% for del in delivery %}
+                <p>Delivery Address</p>
+                <h4 id="currentPincode">{{del.region}} {{del.pincode}} <i class="bx bx-chevron-down"></i></h4>
+                {% endfor %}
+                {% else %}
+                <p>Delivery To</p>
+                <h4 id="currentPincode">City Pincode <i class="bx bx-chevron-down"></i></h4>
+              {% endif %}
+            </div>
+          </div>
+          {% if currentUser %} 
+          <div class="cart-container">
+            {% block icon %}<i class="bx bx-cart-alt" id="cart" onclick="cart('{{currentUserId}}')"></i><span class="order-count">{{count}}</span>{% endblock  %}
+        </div>
+          {% block user %}
+          <div id="user-text">
+            <img src="{% static 'images/hat.gif' %}" alt="greet-img">
+            <h1 onclick="userAccount('{{currentUser}}','{{currentUserId}}')">Hi, {{currentUser}}</h1>
+          </div>{% endblock %}
+          <!-- <div class="button" onclick="logout()">
+            <p onclick="">Logout</p>
+          </div> -->
+          <div class="user-account">
+            <i onclick="" class="bx bx-user-circle"></i>
+             <i class="bx bx-chevron-down" id="chevron"></i>
+          </div>
+         
+          {% elif not currentUser %}
+          <!-- <div class="button" onclick="login()">
+            <p onclick="">Login</p>
+            <i onclick="" class="bx bx-user-circle"></i>
+          </div> -->
+          {% endif %}
+        </div> 
+        <div id="pincodeModal" class="modal"> 
+          <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2 id="heading">Enter pincodemodal</h2>
+            <input type="text" name="" placeholder="Enter Your Pincode" id="pincodeinput">
+            <input type="hidden" id="customer_id" value="{{currentUserId}}">
+            <button id="submitPincode">Submit</button>
+            <p id="alert-message"></p>
+            <div id="regionDisplay"></div>
+          </div>
+        </div>
+      </div>
+      <hr class="horizontal" />
+      {% if currentUser %}
+      <div class="navbar-bottom-section">
+        <li>
+          <a href="/index/{{currentUserId}}" class="color">
+            <span class="span"> Home</span>
+          </a>
+        </li>
+        <li>
+          <a onclick="seller('{{currentUserId}}')" style="cursor: pointer;" class="black">
+            <span class="span-2"> Sell Now</span>
+          </a>
+        </li>
+        <li>
+          <a onclick="viewSeller('{{currentUserId}}')" class="black">
+            <span class="span-2">Medicines</span>
+          </a>
+        </li>
+        <li>
+          <a onclick="viewOrders('{{currentUserId}}')" class="black">
+            <span class="span-2">Orders</span>
+          </a>
+        </li>
+        <li>
+          <a href="/contact" class="black">
+            <span class="span-2">Contact Us</span>
+          </a>
+        </li>
+      </div>
+      {% endif %}
+    </section>
+    {% block top %}
+    {% block body %}
+    <!-- hero section -->
+    <section>
+      <div class="hero-section">
+        <img src="{% static 'images/hero-left.svg' %}" alt="" />
+        <img src="{% static 'images/hero-right.svg' %}" alt="" />
+        
+        <div class="centered" >
+          <h1>Buy Medicines and Essentials</h1>
+          <div class="input-section" id="" style="cursor: pointer;" onclick="viewSeller('{{currentUserId}}')"onclick="">
+            <i  class="bx bx-search-alt-2"></i>
+            <p>Search Medicines</p>
+          </div>
+        </div>
+      </a>
+      </div>
+    </section>
+
+    {% if delivery %}
+    {% for del in delivery %}
+    <script>
+      $("#pincodeinput").val("{{del.pincode}}").attr('disabled','disabled')
+      $("#submitPincode").css('display','none')
+      $("#alert-message").html("Pincode Already Entered");
+      $("#heading").css('display','none')
+    </script>
+      
+    {% endfor %}
+      
+    {% endif %}
+    <!-- banner section -->
+    <section>
+      <div class="wrapper-div">
+        <div class="wrapper">
+          <i id="left" class="fa-solid fas fa-angle-left"></i>
+          <ul class="carousel">
+            <li class="card">
+              <div class="img">
+                <img src="{% static 'images/img1.webp' %}" alt="" draggable="false" />
+              </div>
+            </li>
+            <li class="card">
+              <div class="img">
+                <img src="{% static 'images/img2.webp' %}" alt="" draggable="false" />
+              </div>
+            </li>
+            <li class="card">
+              <div class="img">
+                <img src="{% static 'images/img3.webp' %}" alt="" draggable="false" />
+              </div>
+            </li>
+          </ul>
+          <i id="right" class="fa-solid fas fa-angle-right"></i>
+        </div>
+      </div>
+    </section>
+    <!-- products section -->
+    <section>
+      <div class="flex">
+        <h1>Explore Our Products</h1>
+        <p>View all</p>
+      </div>
+      <div class="products-section">
+        {% for med in medicines %}
+        <div class="products" data-title="{{ med.generic_name|lower }}" >
+            <div class="product-card">
+                <div class="product-left">
+                    <img src="{{ med.med_image.url }}" alt="" />
+                    <p id="medicine-title">{{ med.generic_name }}</p>
+                </div>
+            </div>
+            <div class="product-price">
+                <p id="med-price">&#8377;{{ med.price }}</p>
+                <p>(233)</p>
+                <p>12% off</p>
+            </div>
+            <button id="addToCart" data-med-id="{{ med.med_id }}">Add to Cart</button>
+            <section>
+                <div class="display-none" style="display: none;">
+                    <p>{{currentUser}}</p>
+                    <p><input type="text" id="customerId" value="{{ currentUserId}}"></p>
+                </div>
+            </section>
+        </div>
+        {% endfor %}
+    </div>
+    </div>
+    </section>
+    <section>
+      <h1 class="text-center">Our <span>Services</span></h1>
+      <div class="services-section">
+        <div class="services">
+          <p><i class="bx bx-plus-medical"></i></p>
+          <h1>Prescription Fulfillment</h1>
+          <span
+            >Fast, accurate, and convenient prescription fulfillment delivered to your door.</span
+          >
+          <!-- <button onclick="signup()">More <i class="bx bx-right-arrow-alt"></i></button> -->
+        </div>
+        <div class="services">
+          <p><i class="bx bx-heart"></i></p>
+          <h1>Medication Counseling</h1>
+          <span
+            >Personalized medication counseling for clear, expert guidance.</span
+          >
+          <!-- <button onclick="signup()">More <i class="bx bx-right-arrow-alt"></i></button> -->
+        </div>
+        <div class="services">
+          <p><i class="fa-solid fa-prescription-bottle-medical"></i></p>
+          <h1>Health Screenings</h1>
+          <span
+            >Enhance your well-being with our thorough health screenings.</span
+          >
+          <!-- <button onclick="signup()">More <i class="bx bx-right-arrow-alt"></i></button> -->
+        </div>
+        <div class="services">
+          <p><i class="fa-solid fa-notes-medical"></i></p>
+          <h1>Consultations</h1>
+          <span
+            >Get expert advice tailored to your needs with our personalized consultations</span
+          >
+          <!-- <button onclick="signup()">More <i class="bx bx-right-arrow-alt"></i></button> -->
+        </div>
+        <div class="services">
+          <p><i class="fa-solid fa-syringe"></i></p>
+          <h1>Immunizations</h1>
+          <span
+            >Stay protected with our essential immunizations</span
+          >
+          <!-- <button onclick="signup()">More <i class="bx bx-right-arrow-alt"></i></button> -->
+        </div>
+        <div class="services">
+          <p><i class="fa-solid fa-bed-pulse"></i></p>
+          <h1>Patient Education</h1>
+          <span
+            >Empower yourself with our informative patient education resources.</span
+          >
+          <!-- <button onclick="signup()">More <i class="bx bx-right-arrow-alt"></i></button> -->
+        </div>
+      </div>
+    </section>
+    <section>
+      <div class="flex">
+        <h1>New Arrivals</h1>
+        <p>View all</p>
+      </div>
+    </div>
+    </section>
+    <section>
+      <h1 class="text-center">About<span> Us</span></h1>
+      <div class="about-us">
+        <div class="about-left">
+          <!-- <p>About Us</p> -->
+          <h1>Delivering Quality Healthcare Every Day: Learn More About Us</h1>
+          <span
+            >Dedicated to Delivering Quality Healthcare Solutions: Our Journey
+            and Commitment to Your Health and Wellness</span
+          >
+          <div class="about-buttons">
+            <button onclick="medicine()">Buy Now</button>
+            <button onclick="contact()">Contact Us</button>
+          </div>
+          <h6 class="socialtext">Follow us On</h6>
+          <div class="social-icons">
+            <i class="bx bxl-facebook-circle fb"></i>
+            <i class="bx bxl-instagram in"></i>
+            <i class="bx bxl-linkedin li"></i>
+          </div>
+        </div>
+        <div class="about-right">
+          <img src="{% static 'images/aboutimg.jpg' %}" alt="" />
+        </div>
+      </div>
+    </section>
+    <!-- choose us -->
+    <section>
+      <h1 class="text-center">Why<span> Choose Us</span></h1>
+      <div class="about-us">
+        <div class="choose-left">
+          <img src="{% static 'images/aboutimg.jpg' %}" alt="" />
+        </div>
+        <div class="choose-right">
+          <!-- <p>Why Choose Us</p> -->
+          <h1>Choose Us for Innovation, Quality, and Commitment</h1>
+          <span
+            >Dedicated to Delivering Quality Healthcare Solutions: Our Journey
+            and Commitment to Your Health and Wellness</span
+          >
+          <div class="choose-main">
+            <div class="choose-flex">
+              <div class="choose">
+                <i class="bx bx-plus-medical"></i>
+                <div class="choose-text">
+                  <h3>Online Prescription</h3>
+                  <span
+                    >Convenience at your fingertips with our seamless online prescription services.</span
+                  >
+                </div>
+              </div>
+              <div class="choose">
+                <i class="fa-solid fa-pump-medical"></i>
+                <div class="choose-text">
+                  <h3>Medicine Search</h3>
+                  <span
+                    >Find the medications you need quickly and easily with our comprehensive medicine search.</span
+                  >
+                </div>
+              </div>
+              <div class="choose">
+                <i class="fa-solid fa-kit-medical"></i>
+                <div class="choose-text">
+                  <h3>User Profiles</h3>
+                  <span
+                    >Personalize your experience with our customizable user profiles.</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="choose-flex">
+              <div class="choose">
+                <i class="fa-solid fa-comment-medical"></i>
+                <div class="choose-text">
+                  <h3>Order History</h3>
+                  <span
+                    >Keep track of your purchases effortlessly with our detailed order history.</span
+                  >
+                </div>
+              </div>
+              <div class="choose">
+                <i class="fa-solid fa-capsules"></i>
+                <div class="choose-text">
+                  <h3>Dosage Information</h3>
+                  <span
+                    >Get accurate dosage guidance with our easy-to-access dosage information.</span
+                  >
+                </div>
+              </div>
+              <div class="choose">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div class="choose-text">
+                  <h3>Side Effects</h3>
+                  <span
+                    >Stay informed with clear, concise details on potential side effects.</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- seller -->
+    <section>
+      <h1 class="text-center">Become<span> Seller</span></h1>
+      <div class="seller-section">
+        <div class="seller">
+          <p>Sell More, Earn More</p>
+          <h6>
+            Become a Seller Expand your pharmacy business online join our
+            marketplace and start selling today!
+          </h6>
+          <div class="seller-buttons">
+            <button onclick="seller('{{currentUserId}}')">Sell Now</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h1 class="text-center">Our<span> Clients</span></h1>
+      <div class="tech-stacks">
+        <div class="tech-items-wrapper">
+          <div class="tech-items">
+            <img src="{% static 'images/google.svg' %}" alt="" />
+            <img src="{% static 'images/apple.webp' %}" alt="" />
+            <img src="{% static 'images/micro.png' %}" alt="" />
+            <img src="{% static 'images/adidas.png' %}" alt="" />
+            <img src="{% static 'images/appollo.png' %}" alt="" />
+            <img src="{% static 'images/gucci.png' %}" alt="" />
+            <img src="{% static 'images/amzon.png' %}" alt="" />
+          </div>
+          <div class="tech-items">
+            <img src="{% static 'images/google.svg' %}" alt="" />
+            <img src="{% static 'images/apple.webp' %}" alt="" />
+            <img src="{% static 'images/micro.png' %}" alt="" />
+            <img src="{% static 'images/adidas.png' %}" alt="" />
+            <img src="{% static 'images/appollo.png' %}" alt="" />
+            <img src="{% static 'images/gucci.png' %}" alt="" />
+            <img src="{% static 'images/amzon.png' %}" alt="" />
+          </div>
+        </div>
+      </div>
+    </section>
+    {% endblock   %}
+    {% endblock  %}
+    <footer>
+      <div class="footer-section">
+       <div class="main-footer">
+        <div class="footer footerbasis">
+          <h1>Sudheeksha Pharmacy</h1>
+          <p>Your trusted pharmacy for quality medications, wellness products, and expert advice.
+            Visit us for personalized care and a healthier you!</p>
+        </div>
+        <div class="footer">
+          <h2>Products</h2>
+          <ul>
+            <li>Capsules</li>
+            <li>Syringes</li>
+            <li>Syrups</li>
+          </ul>
+        </div>
+        <div class="footer">
+          <h2>Services</h2>
+          <ul>
+            <li>Prescription Fulfillment</li>
+            <li>Medication Counseling</li>
+            <li>Health Screenings</li>
+            <li>Patient Education</li>
+          </ul>
+        </div>
+        <div class="footer footernews">
+         <h2>News Letter</h2>
+         <p class="footer-text">Subscribe to our newsletter!</p>
+         <div class="news-search">
+          <input type="email" placeholder="Email Address" id="footer-mail">
+          <p onclick="successMessage()">Subscribe</p>
+         </div>
+         <h6 id="success"></h6>
+      </div>
+       </div>
+      <div class="copyright">
+        <div class="links">
+          <a href="{% url 'terms' %}">Terms and Conditions</a>
+          <a href="#">Company</a>
+          <a href="/issues/">Issues</a>
+          <a href="#">Admin</a>
+        </div>
+        &copy;CopyRight 2024@SudeekshaTechnologies - All rights reserved
+      </div>
+      </div>
+    </footer>
+    <script src="{% static 'javascript/index.js' %}"></script>
+  </body>
+</html>
+<script>
+function seller(customerId,data) {
+    if (customerId) {
+        window.location.replace("/dashboard/" + encodeURIComponent(customerId) + '/suppliers');
+    } else {
+        window.location.replace("/sell/"+ encodeURIComponent(customerId));
+    }
+}
+
+ function viewSeller(customerId){
+  window.location.replace("/view_medicine/"+encodeURIComponent(customerId)+'/')
+ }
+ function viewOrders(customerId){
+  window.location.replace("/view_orders/"+encodeURIComponent(customerId))
+ }
+function logout(){
+  window.location.replace('/logout/')
+}
+function updateCartCount() { 
+  $.ajax({
+    url:'/cart-count/',
+    method:'GET',
+    success:function(data){
+      $("#cart-count").text(data.count);
+    }
+  });
+ }
+
+$(document).on('click', '#addToCart', function() {
+    var medicineId = $(this).data('med-id');
+    var customerId = $('#customerId').val();  // Get customerId from the hidden input
+
+    $.ajax({
+        url: '/add-to-cart/',
+        type: 'POST',
+        data: {
+            'medicine_id': medicineId,
+            'quantity': 1,
+            'customer_id': customerId,  // Pass the customer_id here
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+        },
+        success: function(response) {
+            // alert("Medicine added to cart successfully!");
+            const successMessage = document.getElementById('success-message');
+                successMessage.style.display = 'block';
+
+                // Hide the message after 3 seconds
+                setTimeout(function() {
+                    successMessage.style.display = 'none';
+                    // Optionally reload the homepage
+                    window.location.href = '/index/'+encodeURIComponent(customerId);  // Redirect to the homepage
+                }, 3000);
+        },
+        error: function(response) {
+            alert("Failed to add medicine to cart.");
+        }
+    });
+});
+
+$(document).ready(function(){
+  $("#chevron").mouseenter(function(){
+    $("#user-modal").toggle('opacity-1')
+  },
+)
+})
+
+function userAccount(name, cid){
+  window.location.replace('/userdashboard/'+encodeURIComponent(name)+'/'+encodeURIComponent(cid))
+}
+document.getElementById("deliveryTo").onclick = function(){
+  document.getElementById("pincodeModal").style.display = 'block';
+}
+document.getElementById("closeModal").onclick = function(){
+  document.getElementById("pincodeModal").style.display = 'none';
+}
+document.getElementById("submitPincode").onclick = function(){
+  const pincode = document.getElementById('pincodeinput').value;
+  const customer_id = document.getElementById('customer_id').value;
+
+  $.ajax({
+    type:'POST',
+    url:"{% url 'get-region' %}",
+    data:{
+      "pincode":pincode,
+      "customer_id":customer_id,
+    },
+    success:function(response){
+      if(response.status == 'success'){
+          const region = response.region;
+          document.getElementById('regionDisplay').innerText = `Region:${region}`;
+          document.getElementById('currentPincode').innerText = `${region}:${pincode}`;
+          document.getElementById('pincodeModal').style.display = 'none'
+          window.location.reload();
+      }
+      else{
+        document.getElementById("regionDisplay").innerText = response.message;
+      }
+    },
+    error:function(xhr, status, error){
+      console.error("Error Fetching Data:", error);
+      document.getElementById("regionDisplay").innerText = 'Error Fetching Data'
+    }
+  })
+}
+window.onclick = function(){
+  if(event.target == document.getElementById('pincodeModal')){
+    document.getElementById('pincodeModal').style.display = 'none'
+  }
+}
+</script>

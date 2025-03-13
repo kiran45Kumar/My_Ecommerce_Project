@@ -1,0 +1,86 @@
+{% extends 'admin/index.html' %}
+{% load static  %}
+<div id="main">
+    <header class="mb-3">
+        <a href="#" class="burger-btn d-block d-xl-none">
+            <i class="bi bi-justify fs-3"></i>
+        </a>
+    </header>
+    {% block dashboard_content %}
+    <div class="page-heading">
+        <div class="page-title">
+            <div class="row">
+                <div class="col-12 col-md-6 order-md-1 order-last">
+                    <h3>Table</h3>
+                    <p class="text-subtitle text-muted">For user to check they list</p>
+                </div>
+                <div class="col-12 col-md-6 order-md-2 order-first">
+                    <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="/admin_dashboard/">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">Update Vendor</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+<div class="row g-3">
+    <div class="col-md-6">
+      <label for="inputEmail4" class="form-label">Supplier Name</label>
+      <input type="text" class="form-control" id="supplier_name{{seller.supplier_id}}" value="{{seller.supplier_name}}">
+    </div>
+    <div class="col-md-6">
+      <label for="inputPassword4" class="form-label">Phone</label>
+      <input type="tel" maxlength="10" class="form-control" id="supplier_phone{{seller.supplier_id}}" value="{{seller.phone_number}}">
+    </div>
+    <div class="col-12">
+      <label for="inputAddress" class="form-label">Address</label>
+      <input type="text" class="form-control" id="supplier_address{{seller.supplier_id}}" value="{{seller.address}}">
+    </div>
+    <div class="col-12">
+      <label for="inputAddress2" class="form-label">Supplier Email</label>
+      <input type="text" class="form-control" id="supplier_email{{seller.supplier_id}}" value="{{seller.email}}">
+    </div>
+    <div class="col-md-6">
+      <label for="inputCity" class="form-label">Company Name</label>
+      <input type="text" class="form-control" id="CompanyName{{seller.supplier_id}}" value="{{seller.CompanyName}}">
+    </div>
+    <div class="col-md-4">
+      <label for="inputState" class="form-label">State</label>
+      <input type="text" class="form-control" id="CompanyGst{{seller.supplier_id}}" value="{{seller.CompanyGst}}">
+    </div>
+    <div class="col-md-2">
+      <label for="inputZip" class="form-label">Account Created By</label>
+      <input type="text" class="form-control" id="account_created_by{{seller.supplier_id}}" value="{{seller.account_created_by}}">
+    </div>
+    <div class="col-12">
+      <button type="submit" class="btn btn-primary" onclick="UpdateVendor('{{seller.supplier_id}}')">Update</button>
+    </div>
+  </div>
+
+  <div class="toast-container position-fixed top-0 end-0 p-3">
+    <!-- Success Toast -->
+    <div id="successToast" class="toast text-success bg-success-subtle border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+          <div class="toast-body d-flex align-items-center">
+            <i class="bi bi-check-circle me-2"></i> Vendor Updated successfully.
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+      </div>
+    <!-- Error Toast -->
+    <div id="errorToast" class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+      <div class="d-flex">
+        <div class="toast-body d-flex align-items-center">
+          <i class="bi bi-exclamation-circle"></i> Failed to Update vendor.
+        </div>
+        <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  </div>
+  {% endblock dashboard_content %}
+            </div>
+</div>
+        
